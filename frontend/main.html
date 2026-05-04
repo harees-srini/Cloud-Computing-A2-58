@@ -67,11 +67,18 @@
             padding: 10px;
             margin: 10px 0;
             border-left: 3px solid #4CAF50;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .song-item img {
             width: 100px;
             height: 100px;
-            margin-right: 10px;
+            object-fit: cover;
+        }
+        .song-info {
+            flex: 1;
         }
         a {
             color: #4CAF50;
@@ -114,8 +121,15 @@
     </div>
 
     <script>
-        // Load user info on page load
+        const API_URL = 'https://y6csicjhhl.execute-api.us-east-1.amazonaws.com/prod';
+
+        // Redirect to login if not logged in
         window.onload = function() {
+            const email = localStorage.getItem('user');
+            if (!email) {
+                window.location.href = 'index.html';
+                return;
+            }
             loadUserProfile();
             loadSubscriptions();
         };
@@ -123,7 +137,7 @@
         async function loadUserProfile() {
             const email = localStorage.getItem('user');
             try {
-                const response = await fetch('http://your-backend-url/user?email=' + email);
+                const response = await fetch(`${API_URL}/user?email=${email}`);
                 const data = await response.json();
                 document.getElementById('username').innerHTML = 
                     `<strong>${data.user_name}</strong><br>Email: ${data.email}`;
@@ -135,11 +149,11 @@
         async function loadSubscriptions() {
             const email = localStorage.getItem('user');
             try {
-                const response = await fetch('http://your-backend-url/subscriptions?email=' + email);
+                const response = await fetch(`${API_URL}/subscriptions?email=${email}`);
                 const subs = await response.json();
                 
                 const subDiv = document.getElementById('subscriptions');
-                if (subs.length === 0) {
+                if (!subs.length) {
                     subDiv.innerHTML = '<p>No subscriptions yet</p>';
                     return;
                 }
@@ -148,9 +162,11 @@
                 for (let song of subs) {
                     html += `
                         <div class="song-item">
-                            <img src="https://your-s3-url/${song.image_url}" alt="Artist">
-                            <strong>${song.title}</strong><br>
-                            ${song.artist} - ${song.album} (${song.year})
+                            <img src="${song.image_url}" alt="${song.artist}" onerror="this.style.display='none'">
+                            <div class="song-info">
+                                <strong>${song.title}</strong><br>
+                                ${song.artist} - ${song.album} (${song.year})
+                            </div>
                             <button class="remove" onclick="unsubscribe('${song.title}', '${song.artist}')">Remove</button>
                         </div>
                     `;
@@ -173,7 +189,7 @@
             }
 
             try {
-                const response = await fetch('http://your-backend-url/search', {
+                const response = await fetch(`${API_URL}/search`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({title, artist, album, year: year ? parseInt(year) : null})
@@ -182,7 +198,7 @@
                 const songs = await response.json();
                 const resultsDiv = document.getElementById('results');
 
-                if (songs.length === 0) {
+                if (!songs.length) {
                     resultsDiv.innerHTML = '<p style="color: red;">No results found</p>';
                     return;
                 }
@@ -191,9 +207,11 @@
                 for (let song of songs) {
                     html += `
                         <div class="song-item">
-                            <img src="https://your-s3-url/${song.image_url}" alt="Artist">
-                            <strong>${song.title}</strong><br>
-                            ${song.artist} - ${song.album} (${song.year})
+                            <img src="${song.image_url}" alt="${song.artist}" onerror="this.style.display='none'">
+                            <div class="song-info">
+                                <strong>${song.title}</strong><br>
+                                ${song.artist} - ${song.album} (${song.year})
+                            </div>
                             <button onclick="subscribe('${song.title}', '${song.artist}')">Subscribe</button>
                         </div>
                     `;
@@ -207,7 +225,7 @@
         async function subscribe(title, artist) {
             const email = localStorage.getItem('user');
             try {
-                await fetch('http://your-backend-url/subscribe', {
+                await fetch(`${API_URL}/subscribe`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({email, title, artist})
@@ -222,7 +240,7 @@
         async function unsubscribe(title, artist) {
             const email = localStorage.getItem('user');
             try {
-                await fetch('http://your-backend-url/unsubscribe', {
+                await fetch(`${API_URL}/unsubscribe`, {
                     method: 'DELETE',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({email, title, artist})

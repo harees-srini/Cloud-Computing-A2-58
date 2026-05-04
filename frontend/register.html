@@ -66,6 +66,8 @@
     </div>
 
     <script>
+        const API_URL = 'https://y6csicjhhl.execute-api.us-east-1.amazonaws.com/prod';
+
         async function register() {
             const email = document.getElementById('email').value;
             const username = document.getElementById('username').value;
@@ -78,7 +80,7 @@
             }
 
             try {
-                const response = await fetch('http://your-backend-url/register', {
+                const response = await fetch(`${API_URL}/register`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({email, username, password})
@@ -87,6 +89,7 @@
                 const data = await response.json();
                 
                 if (data.success) {
+                    alert('Registration successful! Please login.');
                     window.location.href = 'index.html';
                 } else {
                     message.innerHTML = data.message || 'Registration failed';
