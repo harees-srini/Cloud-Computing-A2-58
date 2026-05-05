@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ============================================== -->
+    <!-- META & PAGE TITLE                              -->
+    <!-- ============================================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music App</title>
+
+    <!-- ============================================== -->
+    <!-- GOOGLE FONTS – Inter (weights 300–700)         -->
+    <!-- Matches the auth pages' font stack             -->
+    <!-- ============================================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =============================================
+           RESET & BASE
+           ============================================= */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #f5f5f7;                     /* Apple system gray background */
+            color: #1d1d1f;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* =============================================
+           STICKY TOP NAV BAR
+           - White bar with hairline bottom border
+           - Logo left, user avatar + logout right
+           ============================================= */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.85);  /* Slight transparency for blur */
+            backdrop-filter: blur(20px);             /* Frosted-glass effect */
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid #e5e5e7;       /* Hairline separator */
+            padding: 0 32px;
+            height: 56px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* App logo / name in the nav */
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #1d1d1f;
+        }
+
+        .nav-brand .nav-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #FA2D48, #FB5C74);
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .nav-brand span {
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        /* Right side of nav: avatar circle + logout */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FA2D48, #FB5C74);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .nav-logout {
+            font-size: 14px;
+            font-weight: 500;
+            color: #86868b;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-logout:hover {
+            color: #FA2D48;
+        }
+
+        /* =============================================
+           WELCOME / HERO STRIP
+           - Greeting with user name (filled by JS)
+           ============================================= */
+        .welcome-strip {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 32px 8px;
+        }
+
+        .welcome-strip h2 {
+            font-size: 28px;
+            font-weight: 300;                        /* Light weight for greeting */
+            color: #1d1d1f;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-strip h2 strong {
+            font-weight: 600;                        /* Semibold for the name */
+        }
+
+        /* =============================================
+           MAIN CONTENT CONTAINER
+           - 2-column grid on desktop, stacked on mobile
+           ============================================= */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 32px 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        /* =============================================
+           SECTION CARDS
+           - White card with soft shadow, generous padding
+           ============================================= */
+        .section {
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 18px;
+            box-shadow:
+                0 4px 24px rgba(0, 0, 0, 0.04),
+                0 1px 2px rgba(0, 0, 0, 0.02);
+            transition: box-shadow 0.3s ease;
+        }
+
+        /* =============================================
+           SECTION HEADINGS
+           - Small icon + semibold title
+           ============================================= */
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1d1d1f;
+            letter-spacing: -0.2px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Section header icons – small and muted */
+        .section-icon {
+            font-size: 18px;
+            opacity: 0.7;
+        }
+
+        /* =============================================
+           PROFILE CARD CONTENT
+           ============================================= */
+        #username {
+            font-size: 15px;
+            color: #1d1d1f;
+            line-height: 1.7;
+        }
+
+        #username strong {
+            font-size: 22px;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 2px;
+            letter-spacing: -0.3px;
+        }
+
+        /* =============================================
+           SUBSCRIPTIONS – EMPTY STATE
+           ============================================= */
+        #subscriptions p {
+            text-align: center;
+            color: #aeaeb2;
+            font-size: 14px;
+            padding: 32px 0;
+        }
+
+        /* =============================================
+           SONG ITEM CARDS
+           - Used in both Subscriptions and Search results
+           - White card with soft border, rounded corners
+           - Hover lift effect
+           ============================================= */
+        .song-item {
+            background: #f9f9fb;
+            padding: 14px 16px;
+            margin: 12px 0;
+            border: 1px solid #f0f0f2;
+            border-left: none;                       /* Remove old green left border */
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+
+        .song-item:first-child {
+            margin-top: 0;
+        }
+
+        /* Hover – slight lift and shadow */
+        .song-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            background-color: #ffffff;
+        }
+
+        /* Album art thumbnail */
+        .song-item img {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            flex-shrink: 0;
+        }
+
+        /* Song text info */
+        .song-info {
+            flex: 1;
+            min-width: 0;                            /* Allow text truncation */
+        }
+
+        .song-info strong {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1d1d1f;
+            display: block;
+            margin-bottom: 3px;
+            letter-spacing: -0.1px;
+        }
+
+        /* Secondary text: artist - album (year) */
+        .song-info br + * ,
+        .song-info {
+            font-size: 13px;
+            color: #86868b;
+            line-height: 1.5;
+        }
+
+        /* =============================================
+           BUTTONS (global)
+           - Primary: accent gradient (Search, Subscribe)
+           ============================================= */
+        button {
+            background: linear-gradient(135deg, #FA2D48, #FB5C74);
+            color: #ffffff;
+            padding: 10px 22px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.1px;
+            margin: 4px 0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+            box-shadow: 0 2px 10px rgba(250, 45, 72, 0.2);
+            flex-shrink: 0;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(250, 45, 72, 0.35);
+        }
+
+        button:active {
+            transform: translateY(0);
+            opacity: 0.9;
+        }
+
+        /* =============================================
+           REMOVE BUTTON (.remove)
+           - Subtle gray background, red text on hover
+           ============================================= */
+        button.remove {
+            background: #f2f2f7;
+            color: #86868b;
+            box-shadow: none;
+            font-weight: 500;
+        }
+
+        button.remove:hover {
+            background: #fef2f2;
+            color: #FF3B30;
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        button.remove:active {
+            background: #fde8e8;
+            color: #d32f2f;
+        }
+
+        /* =============================================
+           INPUT FIELDS
+           - Light gray fill, hairline border, accent focus ring
+           - Matches auth pages
+           ============================================= */
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            margin: 0;
+            border: 1px solid #e5e5e7;
+            border-radius: 10px;
+            background-color: #f2f2f7;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 400;
+            color: #1d1d1f;
+            outline: none;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+        }
+
+        input::placeholder {
+            color: #aeaeb2;
+            font-weight: 400;
+        }
+
+        input:focus {
+            border-color: #FA2D48;
+            box-shadow: 0 0 0 3px rgba(250, 45, 72, 0.1);
+            background-color: #ffffff;
+        }
+
+        /* =============================================
+           SEARCH FORM – 2-column input grid
+           ============================================= */
+        .search-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .search-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .search-actions button {
+            padding: 12px 36px;
+            font-size: 15px;
+        }
+
+        /* =============================================
+           LINKS
+           ============================================= */
+        a {
+            color: #FA2D48;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        a:hover {
+            opacity: 0.75;
+        }
+
+        /* =============================================
+           INLINE ERROR TEXT (from JS: style="color: red;")
+           - We can't change the JS, so just make inline red
+             look nicer via a global override
+           ============================================= */
+
+        /* =============================================
+           RESPONSIVE – MOBILE (≤ 768px)
+           - Stack columns, reduce padding
+           ============================================= */
+        @media (max-width: 768px) {
+            header {
+                padding: 0 20px;
+            }
+
+            .welcome-strip {
+                padding: 28px 20px 4px;
+            }
+
+            .welcome-strip h2 {
+                font-size: 24px;
+            }
+
+            .container {
+                grid-template-columns: 1fr;          /* Stack all sections */
+                padding: 20px;
+                gap: 16px;
+            }
+
+            .section {
+                padding: 24px;
+                border-radius: 14px;
+            }
+
+            .search-grid {
+                grid-template-columns: 1fr;          /* Stack inputs on mobile */
+            }
+
+            .search-actions {
+                justify-content: stretch;
+            }
+
+            .search-actions button {
+                width: 100%;
+            }
+
+            .song-item {
+                padding: 12px;
+            }
+
+            .song-item img {
+                width: 52px;
+                height: 52px;
+            }
+        }
+
+        /* =============================================
+           RESPONSIVE – SMALL MOBILE (≤ 480px)
+           ============================================= */
+        @media (max-width: 480px) {
+            header {
+                padding: 0 16px;
+                height: 50px;
+            }
+
+            .nav-brand span {
+                font-size: 15px;
+            }
+
+            .welcome-strip {
+                padding: 24px 16px 4px;
+            }
+
+            .welcome-strip h2 {
+                font-size: 22px;
+            }
+
+            .container {
+                padding: 16px;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================================================ -->
+    <!-- STICKY TOP NAVIGATION BAR                        -->
+    <!-- App logo left · User avatar + Logout right       -->
+    <!-- ================================================ -->
+    <header>
+        <!-- Logo / brand -->
+        <a class="nav-brand" href="#">
+            <div class="nav-icon">🎵</div>
+            <span>Music App</span>
+        </a>
+
+        <!-- Right side: avatar circle + logout link -->
+        <div class="nav-actions">
+            <div class="nav-avatar">♫</div>
+            <a href="#" onclick="logout()" class="nav-logout">Sign Out</a>
+        </div>
+    </header>
+
+    <!-- ================================================ -->
+    <!-- WELCOME STRIP – Greeting with user name          -->
+    <!-- ================================================ -->
+    <div class="welcome-strip">
+        <h2>Welcome back</h2>
+    </div>
+
+    <!-- ================================================ -->
+    <!-- MAIN CONTENT – 2-column grid (stacks on mobile)  -->
+    <!-- ================================================ -->
+    <div class="container">
+
+        <!-- ============================================ -->
+        <!-- PROFILE CARD                                 -->
+        <!-- Shows username + email (filled by JS)        -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2><span class="section-icon">👤</span> Your Profile</h2>
+            <p id="username">Loading...</p>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SUBSCRIPTIONS CARD                           -->
+        <!-- Lists subscribed songs (filled by JS)        -->
+        <!-- ============================================ -->
+        <div class="section">
+            <h2><span class="section-icon">💫</span> Your Subscriptions</h2>
+            <div id="subscriptions">
+                <p>No subscriptions yet</p>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SEARCH SECTION – spans full width            -->
+        <!-- 2-column input grid + results list           -->
+        <!-- ============================================ -->
+        <div class="section" style="grid-column: 1 / -1;">
+            <h2><span class="section-icon">🔍</span> Search Music</h2>
+
+            <!-- Search inputs – 2×2 grid on desktop -->
+            <div class="search-grid">
+                <input type="text" id="title" placeholder="Song Title">
+                <input type="text" id="artist" placeholder="Artist">
+                <input type="text" id="album" placeholder="Album">
+                <input type="number" id="year" placeholder="Year">
+            </div>
+
+            <!-- Search button – right-aligned -->
+            <div class="search-actions">
+                <button onclick="search()">Search</button>
+            </div>
+
+            <!-- Search results (populated by JS) -->
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <!-- ================================================ -->
+    <!-- APPLICATION LOGIC (JavaScript)                   -->
+    <!-- ⚠️  DO NOT MODIFY – all function names, IDs,    -->
+    <!--     API_URL, fetch calls, and localStorage       -->
+    <!--     behaviour must remain exactly as-is          -->
+    <!-- ================================================ -->
+    <script>
+        const API_URL = 'http://100.50.217.193';
+
+        window.onload = function() {
+            const email = localStorage.getItem('user');
+            if (!email) {
+                window.location.href = 'index.html';
+                return;
+            }
+            loadUserProfile();
+            loadSubscriptions();
+        };
+
+        async function loadUserProfile() {
+            const email = localStorage.getItem('user');
+            try {
+                const response = await fetch(`${API_URL}/user?email=${email}`);
+                const data = await response.json();
+                document.getElementById('username').innerHTML = 
+                    `<strong>${data.user_name}</strong><br>Email: ${data.email}`;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function loadSubscriptions() {
+            const email = localStorage.getItem('user');
+            try {
+                const response = await fetch(`${API_URL}/subscriptions?email=${email}`);
+                const subs = await response.json();
+                
+                const subDiv = document.getElementById('subscriptions');
+                if (!subs.length) {
+                    subDiv.innerHTML = '<p>No subscriptions yet</p>';
+                    return;
+                }
+
+                let html = '';
+                for (let song of subs) {
+                    html += `
+                        <div class="song-item">
+                            <img src="${song.image_url}" alt="${song.artist}" onerror="this.style.display='none'">
+                            <div class="song-info">
+                                <strong>${song.title}</strong><br>
+                                ${song.artist} - ${song.album} (${song.year})
+                            </div>
+                            <button class="remove" onclick="unsubscribe('${song.title}', '${song.artist}')">Remove</button>
+                        </div>
+                    `;
+                }
+                subDiv.innerHTML = html;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function search() {
+            const title = document.getElementById('title').value;
+            const artist = document.getElementById('artist').value;
+            const album = document.getElementById('album').value;
+            const year = document.getElementById('year').value;
+
+            if (!title && !artist && !album && !year) {
+                document.getElementById('results').innerHTML = '<p style="color: red;">Please fill at least one field</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/search`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({title, artist, album, year: year ? parseInt(year) : null})
+                });
+
+                const songs = await response.json();
+                const resultsDiv = document.getElementById('results');
+
+                if (!songs.length) {
+                    resultsDiv.innerHTML = '<p style="color: red;">No results found</p>';
+                    return;
+                }
+
+                let html = '';
+                for (let song of songs) {
+                    html += `
+                        <div class="song-item">
+                            <img src="${song.image_url}" alt="${song.artist}" onerror="this.style.display='none'">
+                            <div class="song-info">
+                                <strong>${song.title}</strong><br>
+                                ${song.artist} - ${song.album} (${song.year})
+                            </div>
+                            <button onclick="subscribe('${song.title}', '${song.artist}')">Subscribe</button>
+                        </div>
+                    `;
+                }
+                resultsDiv.innerHTML = html;
+            } catch (error) {
+                document.getElementById('results').innerHTML = '<p style="color: red;">Error searching</p>';
+            }
+        }
+
+        async function subscribe(title, artist) {
+            const email = localStorage.getItem('user');
+            try {
+                await fetch(`${API_URL}/subscribe`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email, title, artist})
+                });
+                loadSubscriptions();
+                alert('Added to your subscriptions!');
+            } catch (error) {
+                alert('Error subscribing');
+            }
+        }
+
+        async function unsubscribe(title, artist) {
+            const email = localStorage.getItem('user');
+            try {
+                await fetch(`${API_URL}/unsubscribe`, {
+                    method: 'DELETE',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email, title, artist})
+                });
+                loadSubscriptions();
+                alert('Removed from subscriptions');
+            } catch (error) {
+                alert('Error unsubscribing');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

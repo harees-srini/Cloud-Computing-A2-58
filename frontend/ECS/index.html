@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ============================================== -->
+    <!-- META & PAGE TITLE                              -->
+    <!-- ============================================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music App - Login</title>
+
+    <!-- ============================================== -->
+    <!-- GOOGLE FONTS – Inter (weights 300–700)         -->
+    <!-- Used for clean, Apple-style typography          -->
+    <!-- ============================================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =============================================
+           RESET & BASE STYLES
+           - Removes default margins/padding
+           - Sets font, background, and centers the page
+           ============================================= */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background-color: #fafafa;              /* Soft off-white background */
+            display: flex;
+            justify-content: center;                 /* Horizontally center the card */
+            align-items: center;                     /* Vertically center the card */
+            min-height: 100vh;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;     /* Smoother font rendering (macOS/iOS) */
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* =============================================
+           LOGIN CARD (main container)
+           - White card with soft shadow and rounded corners
+           - Max-width keeps it from stretching too wide
+           ============================================= */
+        .login-box {
+            background: #ffffff;
+            padding: 48px 40px 40px;                 /* Generous internal spacing */
+            border-radius: 20px;                     /* Large rounded corners */
+            box-shadow:
+                0 4px 24px rgba(0, 0, 0, 0.04),     /* Primary soft shadow */
+                0 1px 2px rgba(0, 0, 0, 0.02);      /* Subtle inner edge shadow */
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* =============================================
+           APP ICON (music note badge)
+           - Pink-to-red gradient square with rounded corners
+           - Contains the 🎵 emoji
+           ============================================= */
+        .app-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #FA2D48, #FB5C74);  /* Apple Music accent gradient */
+            margin-bottom: 24px;
+            font-size: 26px;
+            line-height: 1;
+            box-shadow: 0 4px 16px rgba(250, 45, 72, 0.25);        /* Colored glow under the icon */
+        }
+
+        /* =============================================
+           TYPOGRAPHY
+           - h1: Bold app title (30px)
+           - .subtitle: Light gray tagline below the title
+           ============================================= */
+        h1 {
+            font-size: 30px;
+            font-weight: 700;
+            color: #1d1d1f;                          /* Near-black, Apple-style text */
+            letter-spacing: -0.5px;                  /* Tight tracking for headings */
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            font-weight: 400;
+            color: #86868b;                          /* Muted gray for secondary text */
+            margin-bottom: 36px;
+            letter-spacing: 0.1px;
+        }
+
+        /* =============================================
+           FORM GROUPS (label + input wrapper)
+           - Left-aligned labels above each input
+           ============================================= */
+        .form-group {
+            margin-bottom: 14px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #6e6e73;                          /* Medium gray label color */
+            margin-bottom: 6px;
+            letter-spacing: 0.2px;
+        }
+
+        /* =============================================
+           INPUT FIELDS
+           - Light gray fill with hairline border
+           - Accent ring appears on focus
+           ============================================= */
+        input {
+            width: 100%;
+            padding: 13px 16px;
+            margin: 0;
+            border: 1px solid #e5e5e7;              /* Hairline light border */
+            border-radius: 12px;
+            background-color: #f2f2f7;              /* Light gray fill (Apple system gray 6) */
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 400;
+            color: #1d1d1f;
+            outline: none;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+            box-sizing: border-box;
+        }
+
+        /* Placeholder text style */
+        input::placeholder {
+            color: #aeaeb2;                          /* Subtle placeholder color */
+            font-weight: 400;
+        }
+
+        /* Focus state – pink accent ring */
+        input:focus {
+            border-color: #FA2D48;                   /* Accent border on focus */
+            box-shadow: 0 0 0 3px rgba(250, 45, 72, 0.12);  /* Soft pink glow ring */
+            background-color: #ffffff;               /* Switch to white on focus */
+        }
+
+        /* =============================================
+           SIGN IN BUTTON
+           - Pink-to-red gradient (Apple Music accent)
+           - Lift effect on hover, press effect on active
+           ============================================= */
+        button {
+            width: 100%;
+            padding: 14px 20px;
+            margin-top: 10px;
+            background: linear-gradient(135deg, #FA2D48, #FB5C74);  /* Primary accent gradient */
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+            box-shadow: 0 4px 14px rgba(250, 45, 72, 0.3);  /* Colored shadow beneath button */
+        }
+
+        /* Hover – subtle lift */
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(250, 45, 72, 0.4);
+        }
+
+        /* Active/click – press down */
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(250, 45, 72, 0.3);
+            opacity: 0.92;
+        }
+
+        /* =============================================
+           ERROR / STATUS MESSAGE (#message div)
+           - Red text that fades in with animation
+           - min-height prevents layout shift
+           ============================================= */
+        #message {
+            text-align: center;
+            color: #FF3B30;                          /* Apple system red */
+            font-size: 13px;
+            font-weight: 500;
+            margin-top: 16px;
+            min-height: 20px;                        /* Reserve space so layout doesn't jump */
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Fade-in animation for error messages */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =============================================
+           "CREATE ACCOUNT" LINK
+           - Accent-colored, fades on hover
+           ============================================= */
+        a {
+            display: inline-block;
+            text-align: center;
+            margin-top: 24px;
+            color: #FA2D48;                          /* Matches accent color */
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.1px;
+            transition: opacity 0.2s ease;
+        }
+
+        a:hover {
+            opacity: 0.72;                           /* Subtle fade on hover */
+        }
+
+        /* =============================================
+           "OR" DIVIDER
+           - Horizontal line with "OR" text in the middle
+           - Uses ::before and ::after pseudo-elements for lines
+           ============================================= */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin-top: 28px;
+            gap: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: #e5e5e7;              /* Light hairline */
+        }
+
+        .divider span {
+            font-size: 12px;
+            font-weight: 500;
+            color: #aeaeb2;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        /* =============================================
+           RESPONSIVE – MOBILE (≤ 480px)
+           - Full-width card with reduced padding
+           - Slightly smaller heading
+           ============================================= */
+        @media (max-width: 480px) {
+            body {
+                padding: 20px;
+                align-items: flex-start;             /* Push card toward top on small screens */
+                padding-top: 10vh;
+            }
+
+            .login-box {
+                padding: 36px 24px 32px;
+                border-radius: 16px;
+                box-shadow:
+                    0 2px 16px rgba(0, 0, 0, 0.05);
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================================================ -->
+    <!-- LOGIN CARD – Main container for the login form   -->
+    <!-- ================================================ -->
+    <div class="login-box">
+
+        <!-- App icon badge (music note emoji in gradient square) -->
+        <div class="app-icon">🎵</div>
+
+        <!-- App title and subtitle -->
+        <h1>Music App</h1>
+        <p class="subtitle">Sign in to continue</p>
+
+        <!-- Email input field -->
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="you@example.com">
+        </div>
+
+        <!-- Password input field -->
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password">
+        </div>
+
+        <!-- Sign In button – calls login() on click -->
+        <button onclick="login()">Sign In</button>
+
+        <!-- Error / status message area (populated by JS) -->
+        <div id="message"></div>
+
+        <!-- "OR" divider line -->
+        <div class="divider"><span>or</span></div>
+
+        <!-- Link to registration page -->
+        <a href="register.html">Create a new account</a>
+    </div>
+
+    <!-- ================================================ -->
+    <!-- LOGIN LOGIC (JavaScript)                         -->
+    <!-- ⚠️  DO NOT MODIFY – IDs, API_URL, fetch calls,  -->
+    <!--     and localStorage behaviour must stay intact   -->
+    <!-- ================================================ -->
+    <script>
+        // Base URL for the backend API (EC2 instance)
+        const API_URL = 'http://100.50.217.193';
+
+        // login() – called when the "Sign In" button is clicked
+        async function login() {
+            // Grab input values and the message display element
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const message = document.getElementById('message');
+
+            // Validation – ensure both fields are filled
+            if (!email || !password) {
+                message.innerHTML = 'Please fill all fields';
+                return;
+            }
+
+            try {
+                // Send POST request to /login endpoint
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email, password})
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    // On success: save user email to localStorage & redirect to main page
+                    localStorage.setItem('user', email);
+                    window.location.href = 'main.html';
+                } else {
+                    // On failure: show error message
+                    message.innerHTML = 'Email or password is invalid';
+                }
+            } catch (error) {
+                // Network / server error
+                message.innerHTML = 'Connection error';
+            }
+        }
+    </script>
+</body>
+</html>
