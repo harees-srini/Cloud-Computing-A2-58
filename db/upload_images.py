@@ -5,7 +5,7 @@ import os
 
 # Connect to S3
 s3 = boto3.client('s3', region_name='us-east-1')
-bucket_name = 'music-images-hareessrinevasan'
+bucket_name = 'music-images-piyush'
 
 # Read songs
 with open('2026a2_songs.json', 'r') as f:
